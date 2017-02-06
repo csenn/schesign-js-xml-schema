@@ -58,7 +58,7 @@ npm install schesign-js-xml-schema --save
   /*
   <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
   <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-    <xs:element name="class5">
+    <xs:element name="class1">
       <xs:complexType>
         <xs:sequence>
           <xs:element name="a" type="xs:string" minOccurs="0"/>
