@@ -1,19 +1,19 @@
-## Intro
+# Schesign xml schema
 
-Schesign allows you to build and host data designs. Data designs can be accessed through the API as a graph in JSON format. This library converts this graph into JSON schema.
+Schesign allows you to build and host data designs. Data designs can be accessed through the API as a graph in JSON format. See [schesign-js-api](https://github.com/csenn/schesign-js-api) for more info on retrieving a graph.
 
+This library converts this graph into an XML schema.
 
-#### Note
-Data designs are versioned which provides a convenient way to share schemas using the api and ensure a json blob is conforming to a desired spec. Retrieving /u/my_user/my_design/1.0.0/class/my_class will always return
-the same graph, which in turn will always generate the same json schema. This makes sharing a versioned spec internally or with external partners straightforward.
+### Install
+```
+npm install schesign-js-xml-schema --save
+```
 
+## Examples
+### Basic Usage
 
-npm install schesign-js-json-schema
-
-
-### Usage
-
-  import { generateFromClass } from 'schesign-js-json-schema'
+```
+  import { generateFromClass } from 'schesign-js-xml-schema'
 
   const graph = [
     {
@@ -56,17 +56,47 @@ npm install schesign-js-json-schema
 
   console.log(schema)
   /*
-    {
-        "$schema": "http://json-schema.org/draft-04/schema#",
-        "properties": {
-          "a": {  "type": "string" },
-          "b": { "type": "boolean"}
-        },
-        "required": ["b"],
-        "type": "object"
-    }
+  <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="class5">
+      <xs:complexType>
+        <xs:sequence>
+          <xs:element name="a" type="xs:string" minOccurs="0"/>
+          <xs:element name="b" type="xs:boolean" minOccurs="0"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
   */
 
-### Usage with schesign-api module
+```
+### Usage with schesign-js-api module
 
+```
+import { fetchGraph, util } from 'schesign-js-api'
+import { generateFromClass } from 'schesign-js-json-schema'
 
+const uid = util.createUid({
+  ownerType: 'o',
+  userOrOrg: 'examples',
+  designName: 'example_online_store',
+  versionLabel: '1.1.0',
+  resourceType: 'class',
+  classOrProperty: 'Product'
+});
+
+/*
+  Creates the data design's uid with a convenience function
+  https://www.schesign.com/o/examples/example_online_store/1.1.0/class/product
+*/
+console.log(uid);
+
+var options = { uid: uid };
+
+fetchGraph(options).then(json => {
+  const schema = generateFromClass(json.graph, uid)
+  console.log(schema)
+}).catch(err => {
+  console.log(err);
+});
+```
