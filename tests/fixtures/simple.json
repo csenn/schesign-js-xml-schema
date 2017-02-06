@@ -1,0 +1,35 @@
+{
+  "graph": [
+    {
+      "uid": "https://www.schesign.com/u/my_user/my_design/0.0.1/class/class1",
+      "type": "Class",
+      "label": "Class1",
+      "propertyRefs": [
+        {
+          "ref": "https://www.schesign.com/u/my_user/my_design/0.0.1/property/a",
+          "cardinality": { "minItems": 0, "maxItems": 1 }
+        },
+        {
+          "ref": "https://www.schesign.com/u/my_user/my_design/0.0.1/property/b",
+          "cardinality": { "minItems": 1, "maxItems": 1 }
+        }
+      ]
+    },
+    {
+      "uid": "https://www.schesign.com/u/my_user/my_design/0.0.1/property/a",
+      "type": "Property",
+      "label": "a",
+      "range": {
+        "type": "Text"
+      }
+    },
+    {
+      "uid": "https://www.schesign.com/u/my_user/my_design/0.0.1/property/b",
+      "type": "Property",
+      "label": "b",
+      "range": {
+        "type": "Boolean"
+      }
+    }
+  ]
+}

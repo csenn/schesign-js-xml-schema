@@ -1,0 +1,151 @@
+{
+  "graph": [
+    {
+      "uid": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_1\/master\/class\/class1",
+      "type": "Class",
+      "label": "class1",
+      "subClassOf": null,
+      "propertyRefs": [
+        {
+          "ref": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_1\/master\/property\/a",
+          "cardinality": {
+            "minItems": 0,
+            "maxItems": 1
+          }
+        },
+        {
+          "ref": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_1\/master\/property\/b",
+          "cardinality": {
+            "minItems": 0,
+            "maxItems": 1
+          }
+        }
+      ]
+    },
+    {
+      "uid": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_1\/master\/class\/class2",
+      "type": "Class",
+      "label": "class2",
+      "subClassOf": null,
+      "propertyRefs": [
+        {
+          "ref": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_1\/master\/property\/a",
+          "cardinality": {
+            "minItems": 0,
+            "maxItems": 1
+          }
+        },
+        {
+          "ref": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_1\/master\/property\/c",
+          "cardinality": {
+            "minItems": 0,
+            "maxItems": 1
+          }
+        }
+      ]
+    },
+    {
+      "uid": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_2\/master\/class\/class3",
+      "type": "Class",
+      "label": "class3",
+      "subClassOf": null,
+      "propertyRefs": [
+        {
+          "ref": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_1\/master\/property\/a",
+          "cardinality": {
+            "minItems": 0,
+            "maxItems": 1
+          }
+        },
+        {
+          "ref": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_2\/master\/property\/c",
+          "cardinality": {
+            "minItems": 0,
+            "maxItems": 1
+          }
+        },
+        {
+          "ref": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_2\/master\/property\/d",
+          "cardinality": {
+            "minItems": 0,
+            "maxItems": 1
+          }
+        }
+      ]
+    },
+    {
+      "uid": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_2\/master\/class\/class4",
+      "type": "Class",
+      "label": "class4",
+      "subClassOf": null,
+      "propertyRefs": [
+        {
+          "ref": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_1\/master\/property\/a",
+          "cardinality": {
+            "minItems": 0,
+            "maxItems": 1
+          }
+        },
+        {
+          "ref": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_2\/master\/property\/e",
+          "cardinality": {
+            "minItems": 0,
+            "maxItems": 1
+          }
+        }
+      ]
+    },
+    {
+      "uid": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_1\/master\/property\/a",
+      "type": "Property",
+      "label": "a",
+      "range": {
+        "type": "Text"
+      }
+    },
+    {
+      "uid": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_1\/master\/property\/b",
+      "type": "Property",
+      "label": "b",
+      "range": {
+        "type": "LinkedClass",
+        "ref": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_1\/master\/class\/class1"
+      }
+    },
+    {
+      "uid": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_1\/master\/property\/c",
+      "type": "Property",
+      "label": "c",
+      "range": {
+        "type": "LinkedClass",
+        "ref": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_1\/master\/class\/class1"
+      }
+    },
+    {
+      "uid": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_2\/master\/property\/c",
+      "type": "Property",
+      "label": "c",
+      "range": {
+        "type": "LinkedClass",
+        "ref": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_1\/master\/class\/class2"
+      }
+    },
+    {
+      "uid": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_2\/master\/property\/d",
+      "type": "Property",
+      "label": "d",
+      "range": {
+        "type": "LinkedClass",
+        "ref": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_2\/master\/class\/class4"
+      }
+    },
+    {
+      "uid": "https:\/\/www.schesign.com\/u\/csenn\/test_linking_2\/master\/property\/e",
+      "type": "Property",
+      "label": "e",
+      "range": {
+        "type": "Text"
+      }
+    }
+  ]
+}
