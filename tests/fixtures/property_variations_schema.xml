@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="class1" type="o/tests/property_variations/master/class/class1"/>
+  <xs:complexType name="o/tests/property_variations/master/class/class1">
+    <xs:sequence>
+      <xs:element name="a" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="a1" type="xs:boolean"/>
+      <xs:element name="a2" type="xs:boolean" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="a3" type="xs:boolean" minOccurs="1" maxOccurs="10"/>
+      <xs:element name="a4" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="a5" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="a6" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="b" type="xs:string" minOccurs="0"/>
+      <xs:element name="b1" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="[a-z]"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="b2" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="10"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="b3" type="xs:anyURI" minOccurs="0"/>
+      <xs:element name="b4" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value=".+@.+"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="b5" type="xs:string" minOccurs="0"/>
+      <xs:element name="c" type="xs:float" minOccurs="0"/>
+      <xs:element name="c1" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:float">
+            <xs:minExclusive value="0"/>
+            <xs:maxExclusive value="10"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="c2" type="xs:integer" minOccurs="0"/>
+      <xs:element name="c3" type="xs:byte" minOccurs="0"/>
+      <xs:element name="c4" type="xs:short" minOccurs="0"/>
+      <xs:element name="c5" type="xs:integer" minOccurs="0"/>
+      <xs:element name="c6" type="xs:long" minOccurs="0"/>
+      <xs:element name="c7" type="xs:float" minOccurs="0"/>
+      <xs:element name="c8" type="xs:double" minOccurs="0"/>
+      <xs:element name="d" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="one"/>
+            <xs:enumeration value="two"/>
+            <xs:enumeration value="3"/>
+            <xs:enumeration value="4.5"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="e" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="e1" type="xs:date" minOccurs="0"/>
+      <xs:element name="e2" type="xs:time" minOccurs="0"/>
+      <xs:element name="f" type="o/tests/property_variations/master/property/f" minOccurs="0"/>
+      <xs:element name="g" type="o/tests/property_variations/master/class/class2" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="o/tests/property_variations/master/class/class2">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="o/tests/property_variations/master/property/f">
+    <xs:sequence>
+      <xs:element name="a" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="f1" type="o/tests/property_variations/master/property/f1" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="o/tests/property_variations/master/property/f1">
+    <xs:sequence>
+      <xs:element name="a" type="xs:boolean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

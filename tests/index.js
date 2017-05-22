@@ -1,51 +1,56 @@
-import fs from 'fs';
-import path from 'path';
-import { expect } from 'chai';
-import { generateFromClass } from '../src';
-const { describe, it } = global;
+import fs from 'fs'
+import path from 'path'
+import { expect } from 'chai'
+import { generateFromClass } from '../src'
 
-// import simple from './fixtures/simple.json'
-import propertyVariations from './fixtures/propertyVariations.json';
-import linkedClasses from './fixtures/linkedClasses.json';
-import inheritance from './fixtures/inheritance.json';
+import basic from 'schesign-graph-examples/graphs/export/basic'
+import propertyVariations from 'schesign-graph-examples/graphs/export/property_variations'
+import inheritanceChain2 from 'schesign-graph-examples/graphs/export/inheritance_chain_2'
+import linkedNodes2 from 'schesign-graph-examples/graphs/export/linked_nodes_2'
+import recursion from 'schesign-graph-examples/graphs/export/recursion'
 
-const readSql = name => fs.readFileSync(path.resolve(__dirname, 'fixtures', name), 'utf-8');
-const propertyVariationsXml = readSql('propertyVariationsSchema.xml');
-const linkedClassesXml = readSql('linkedClassesSchema.xml');
-const inheritanceXml = readSql('inheritanceSchema.xml');
-// const multipleCardinalitySql = readSql('multipleCardinalitySql.txt');
+const { describe, it } = global
 
-describe('generateJsonSchema', () => {
-  // it('should convert simple to a json schema', () => {
-  //   const schema = generateFromClass(
-  //     simple.graph,
-  //     'https://www.schesign.com/u/my_user/my_design/0.0.1/class/class1'
-  //   );
-  //   expect(schema).to.deep.equal(simpleSchema);
-  // });
+const readSql = name => fs.readFileSync(path.resolve(__dirname, 'fixtures', name), 'utf-8')
+
+describe('generateXmlSchema', () => {
+  it('should convert basic to a json schema', () => {
+    const schema = generateFromClass(
+      basic.graph,
+      'o/tests/basic/master/class/class_a'
+    )
+    expect(schema).to.deep.equal(readSql('basic_schema.xml'))
+  })
+
+  it('should convert recursion to an xml schema', () => {
+    const schema = generateFromClass(
+      recursion.graph,
+      'o/tests/recursion/master/class/class1'
+    )
+    expect(schema).to.deep.equal(readSql('recursion_schema.xml'))
+  })
 
   it('should convert propertyVariations to an xml schema', () => {
     const schema = generateFromClass(
       propertyVariations.graph,
-      'https://www.schesign.com/o/tests/test_property_variations/master/class/class1'
-    );
-    expect(schema).to.deep.equal(propertyVariationsXml);
-  });
-
-  it('should convert linkedClasses to an xml schema', () => {
-    const schema = generateFromClass(
-      linkedClasses.graph,
-      'https://www.schesign.com/u/csenn/test_linking_2/master/class/class3'
-    );
-    expect(schema).to.deep.equal(linkedClassesXml);
-  });
+      'o/tests/property_variations/master/class/class1'
+    )
+    expect(schema).to.deep.equal(readSql('property_variations_schema.xml'))
+  })
 
   it('should convert inheritance to an xml schema', () => {
     const schema = generateFromClass(
-      inheritance.graph,
-      'https://www.schesign.com/u/csenn/test_inheritance_2/master/class/class5'
-    );
-    console.log(schema);
-    expect(schema).to.deep.equal(inheritanceXml);
-  });
-});
+      inheritanceChain2.graph,
+      'o/tests/inheritance_chain_2/master/class/class5'
+    )
+    expect(schema).to.deep.equal(readSql('inheritance_schema.xml'))
+  })
+
+  it('should convert linkedNodes to an xml schema', () => {
+    const schema = generateFromClass(
+      linkedNodes2.graph,
+      'o/tests/linked_nodes_2/master/class/class3'
+    )
+    expect(schema).to.deep.equal(readSql('linked_nodes_schema.xml'))
+  })
+})

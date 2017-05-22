@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Class1" type="o/tests/recursion/master/class/class1"/>
+  <xs:complexType name="o/tests/recursion/master/class/class1">
+    <xs:sequence>
+      <xs:element name="property_a" type="o/tests/recursion/master/property/property_a" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="o/tests/recursion/master/property/property_a">
+    <xs:sequence>
+      <xs:element name="property_a" type="o/tests/recursion/master/property/property_a" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

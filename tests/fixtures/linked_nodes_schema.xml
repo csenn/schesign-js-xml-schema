@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="class3" type="o/tests/linked_nodes_2/master/class/class3"/>
+  <xs:complexType name="o/tests/linked_nodes_2/master/class/class3">
+    <xs:sequence>
+      <xs:element name="a" type="o/tests/linked_nodes_1/0.1.0/class/class1" minOccurs="0"/>
+      <xs:element name="b" type="o/tests/linked_nodes_1/0.1.0/property/b" minOccurs="0"/>
+      <xs:element name="c" type="o/tests/linked_nodes_1/0.1.0/class/class1" minOccurs="0"/>
+      <xs:element name="d" type="o/tests/linked_nodes_2/master/class/class4" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="o/tests/linked_nodes_2/master/class/class4">
+    <xs:sequence>
+      <xs:element name="f" type="o/tests/linked_nodes_1/0.1.0/class/class3" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="o/tests/linked_nodes_1/0.1.0/class/class3">
+    <xs:sequence>
+      <xs:element name="d" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="o/tests/linked_nodes_1/0.1.0/class/class1">
+    <xs:sequence>
+      <xs:element name="a" type="o/tests/linked_nodes_1/0.1.0/class/class1" minOccurs="0"/>
+      <xs:element name="b" type="o/tests/linked_nodes_1/0.1.0/property/b" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="o/tests/linked_nodes_1/0.1.0/property/b">
+    <xs:sequence>
+      <xs:element name="e" type="o/tests/linked_nodes_1/0.1.0/class/class2" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="o/tests/linked_nodes_1/0.1.0/class/class2">
+    <xs:sequence>
+      <xs:element name="a" type="o/tests/linked_nodes_1/0.1.0/class/class1" minOccurs="0"/>
+      <xs:element name="c" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

@@ -1,270 +1,299 @@
-import { isArray, isNumber, isEmpty } from 'lodash';
-import xml2js from 'xml2js';
-import * as utils from './utils';
+import isArray from 'lodash/isArray'
+import isNumber from 'lodash/isNumber'
+import xml2js from 'xml2js'
+import * as utils from './utils'
 
-const EMAIL_REGEX = '.+@.+';
+const EMAIL_REGEX = '.+@.+'
 
-function makeRestriction(xsType, value) {
-  return { xsType, value };
+function makeRestriction (xsType, value) {
+  return { xsType, value }
 }
 
-function _simpleType(xsType, propertyName, ref, restrictions) {
-  let elem;
+function _simpleType (xsType, propertyName, spec, restrictions) {
+  let elem
 
   if (isArray(restrictions) && restrictions.length) {
     const restriction = restrictions.reduce((prev, next) => {
-      const node = { '$': { value: next.value } };
+      const node = { '$': { value: next.value } }
       if (prev[next.xsType]) {
-        prev[next.xsType].push(node);
+        prev[next.xsType].push(node)
       } else {
-        prev[next.xsType] = [node];
+        prev[next.xsType] = [node]
       }
-      return prev;
-    }, { '$': { base: xsType } });
+      return prev
+    }, { '$': { base: xsType } })
 
     elem = {
       '$': { name: propertyName },
       'xs:simpleType': [{
-        'xs:restriction': [restriction],
-      }],
-    };
+        'xs:restriction': [restriction]
+      }]
+    }
   } else {
     elem = {
-      '$': { name: propertyName, type: xsType },
-    };
+      '$': { name: propertyName, type: xsType }
+    }
   }
-  if (!utils.isRequiredCardinality(ref.cardinality)) {
-    elem.$.minOccurs = '0';
+  if (!spec.required) {
+    elem.$.minOccurs = '0'
   }
-  if (utils.isMultipleCardinality(ref.cardinality)) {
-    elem.$.maxOccurs = 'unbounded';
+  if (spec.array) {
+    if (isNumber(spec.minItems)) {
+      elem.$.minOccurs = spec.minItems
+    }
+    if (isNumber(spec.maxItems)) {
+      elem.$.maxOccurs = spec.maxItems
+    } else {
+      elem.$.maxOccurs = 'unbounded'
+    }
   }
-  return elem;
+  return elem
 }
 
-function _fromBooleanRange(propertyName, ref) {
-  return _simpleType('xs:boolean', propertyName, ref);
+function _fromBooleanRange (propertyName, ref) {
+  return _simpleType('xs:boolean', propertyName, ref)
 }
 
-function _fromStringRange(propertyName, range, ref) {
-  let xsType;
-  const restrictions = [];
+function _fromStringRange (propertyName, range, ref) {
+  let xsType
+  const restrictions = []
 
   if (range.format === utils.TEXT_FORMAT_URL) {
-    xsType = 'xs:anyURI';
+    xsType = 'xs:anyURI'
   } else {
-    xsType = 'xs:string';
+    xsType = 'xs:string'
   }
 
   if (range.format === utils.TEXT_FORMAT_EMAIL) {
-    restrictions.push(makeRestriction('xs:pattern', EMAIL_REGEX));
+    restrictions.push(makeRestriction('xs:pattern', EMAIL_REGEX))
   }
   if (range.regex) {
-    restrictions.push(makeRestriction('xs:pattern', range.regex));
+    restrictions.push(makeRestriction('xs:pattern', range.regex))
   }
   if (isNumber(range.minLength)) {
-    restrictions.push(makeRestriction('xs:minLength', range.minLength));
+    restrictions.push(makeRestriction('xs:minLength', range.minLength))
   }
   if (isNumber(range.maxLength)) {
-    restrictions.push(makeRestriction('xs:maxLength', range.maxLength));
+    restrictions.push(makeRestriction('xs:maxLength', range.maxLength))
   }
-  return _simpleType(xsType, propertyName, ref, restrictions);
+  return _simpleType(xsType, propertyName, ref, restrictions)
 }
 
-function _fromNumberRange(propertyName, range, ref) {
-  let xsType;
-  const restrictions = [];
+function _fromNumberRange (propertyName, range, ref) {
+  let xsType
+  const restrictions = []
 
   switch (range.format) {
     case utils.NUMBER_INT:
-      xsType = 'xs:integer';
-      break;
+      xsType = 'xs:integer'
+      break
     case utils.NUMBER_INT_8:
-      xsType = 'xs:byte';
-      break;
+      xsType = 'xs:byte'
+      break
     case utils.NUMBER_INT_16:
-      xsType = 'xs:short';
-      break;
+      xsType = 'xs:short'
+      break
     case utils.NUMBER_INT_32:
-      xsType = 'xs:integer';
-      break;
+      xsType = 'xs:integer'
+      break
     case utils.NUMBER_INT_64:
-      xsType = 'xs:long';
-      break;
+      xsType = 'xs:long'
+      break
     case utils.NUMBER_FLOAT_32:
-      xsType = 'xs:float';
-      break;
+      xsType = 'xs:float'
+      break
     case utils.NUMBER_FLOAT_64:
-      xsType = 'xs:double';
-      break;
+      xsType = 'xs:double'
+      break
     default:
-      xsType = 'xs:float';
+      xsType = 'xs:float'
   }
 
   if (isNumber(range.min)) {
-    restrictions.push(makeRestriction('xs:minExclusive', range.min));
+    restrictions.push(makeRestriction('xs:minExclusive', range.min))
   }
   if (isNumber(range.max)) {
-    restrictions.push(makeRestriction('xs:maxExclusive', range.max));
+    restrictions.push(makeRestriction('xs:maxExclusive', range.max))
   }
 
-  return _simpleType(xsType, propertyName, ref, restrictions);
+  return _simpleType(xsType, propertyName, ref, restrictions)
 }
 
-function _fromDateRange(propertyName, range, ref) {
-  let xsType;
+function _fromDateRange (propertyName, range, ref) {
+  let xsType
   switch (range.format) {
     case utils.DATE_TIME:
-      xsType = 'xs:time';
-      break;
+      xsType = 'xs:time'
+      break
     case utils.DATE_SHORT:
-      xsType = 'xs:date';
-      break;
+      xsType = 'xs:date'
+      break
     case utils.DATE_DATETIME:
     default:
-      xsType = 'xs:dateTime';
+      xsType = 'xs:dateTime'
   }
 
-  return _simpleType(xsType, propertyName, ref);
+  return _simpleType(xsType, propertyName, ref)
 }
 
-function _fromEnumRange(propertyName, range, ref) {
+function _fromEnumRange (propertyName, range, ref) {
   const restrictions = range.values.map(value => {
-    return makeRestriction('xs:enumeration', value);
-  });
+    return makeRestriction('xs:enumeration', value)
+  })
 
-  return _simpleType('xs:string', propertyName, ref, restrictions);
+  return _simpleType('xs:string', propertyName, ref, restrictions)
 }
 
-function _addPropertiesToSchema(context, propertyRefs) {
-  const elems = propertyRefs.map(propertyRef => {
-    const property = context.propertyCache[propertyRef.ref];
-    const { label, range } = property;
-    return _getFromRange(context, label, range, propertyRef);
-  });
-  return { 'xs:element': elems };
+function _addPropertiesToSchema (context, propertySpecs) {
+  const elems = propertySpecs.map(propertySpec => {
+    const property = context.propertyCache[propertySpec.ref]
+    return _getFromRange(context, property, propertySpec)
+  })
+  return { 'xs:element': elems }
 }
 
-function _fromLinkedClass(context, propertyName, range, propertyRef) {
-  const { ref } = range;
-  _addClass(context, ref);
-  return _simpleType(context.classCache[ref].label, propertyName, propertyRef);
+function _fromLinkedClass (context, propertyName, range, propertySpec) {
+  const { ref } = range
+  _addClass(context, ref)
+  return _simpleType(ref, propertyName, propertySpec)
 }
 
-function _addComplexType(context, elemName, propertyRefs) {
-  return {
-    '$': { 'name': elemName },
-    'xs:complexType': [
-      {
-        'xs:sequence': _addPropertiesToSchema(context, propertyRefs),
-      },
-    ],
-  };
+function _fromNestedObject (context, property, spec) {
+  _addComplexType(context, property.uid, property.range.propertySpecs)
+  return _simpleType(property.uid, property.label, spec)
 }
 
-function _addClass(context, classId) {
-  if (context.addedClasses[classId]) {
-    return;
+function _addComplexType (context, uid, propertySpecs) {
+  if (context.complexTypesAdded[uid]) {
+    return
   }
-  context.addedClasses[classId] = true;
+  context.complexTypesAdded[uid] = true
 
-  const selectedClass = context.classCache[classId];
+  const schema = {
+    '$': { 'name': uid },
+    'xs:sequence': _addPropertiesToSchema(context, propertySpecs)
+  }
 
-  const classNode = _addComplexType(
-    context,
-    selectedClass.label,
-    selectedClass.propertyRefs
-  );
-  context.xsSchema['xs:element'].unshift(classNode);
+  context.xsSchema['xs:complexType'].unshift(schema)
+
+  return schema
 }
 
-function _getFromRange(context, propertyName, range, ref) {
+function _addClass (context, classId) {
+  const selectedClass = context.classCache[classId]
+  if (!selectedClass) {
+    throw new Error(`Class ${classId} could not be found in graph`)
+  }
+  _addComplexType(
+    context,
+    selectedClass.uid,
+    selectedClass.propertySpecs
+  )
+}
+
+function _getFromRange (context, property, ref) {
+  const { label, range } = property
+
   switch (range.type) {
     case utils.BOOLEAN:
-      return _fromBooleanRange(propertyName, ref);
+      return _fromBooleanRange(label, ref)
     case utils.TEXT:
-      return _fromStringRange(propertyName, range, ref);
+      return _fromStringRange(label, range, ref)
     case utils.NUMBER:
-      return _fromNumberRange(propertyName, range, ref);
+      return _fromNumberRange(label, range, ref)
     case utils.DATE:
-      return _fromDateRange(propertyName, range, ref);
+      return _fromDateRange(label, range, ref)
     case utils.ENUM:
-      return _fromEnumRange(propertyName, range, ref);
+      return _fromEnumRange(label, range, ref)
     case utils.NESTED_OBJECT:
-      return _addComplexType(context, propertyName, range.propertyRefs);
+      return _fromNestedObject(context, property, ref)
     case utils.LINKED_CLASS:
-      return _fromLinkedClass(context, propertyName, range, ref);
+      return _fromLinkedClass(context, label, range, ref)
     default:
-      throw new Error(`Not expecting type: ${range.type}`);
+      throw new Error(`Not expecting type: ${range.type}`)
   }
 }
 
-function existsInRefs(context, propertyRefs, parentRef) {
-  return propertyRefs.some(ref => {
-    const node = context.propertyCache[ref.ref];
-    const parentNode = context.propertyCache[parentRef.ref];
-    return node.label === parentNode.label;
-  });
+/* If there is a property label lower in the hierarchy,
+do not overwrite it from parent with same name */
+function existsInRefs (context, propertySpecs, parentRef) {
+  return propertySpecs.some(ref => {
+    const node = context.propertyCache[ref.ref]
+    const parentNode = context.propertyCache[parentRef.ref]
+    return node.label === parentNode.label
+  })
 }
 
-export function _flattenHierarchies(context) {
+export function _flattenHierarchies (context) {
   Object.keys(context.classCache).forEach(key => {
-    const classNode = context.classCache[key];
+    const classNode = context.classCache[key]
+    const excluded = []
+
     const recurseNode = node => {
       if (node.subClassOf) {
-        const parent = context.classCache[node.subClassOf];
-        parent.propertyRefs.forEach(parentRef => {
-          const exclude = classNode.excludeParentProperties
-            && classNode.excludeParentProperties.includes(parentRef.ref)
-          const exists = existsInRefs(context, classNode.propertyRefs, parentRef)
-          if (!exclude && !exists) {
-            classNode.propertyRefs.push(parentRef);
+        const parent = context.classCache[node.subClassOf]
+        parent.propertySpecs.forEach(parentRef => {
+          if (node.excludeParentProperties) {
+            excluded.push(...node.excludeParentProperties)
           }
-        });
-        recurseNode(parent);
+          const exists = existsInRefs(context, classNode.propertySpecs, parentRef)
+          if (!exists) {
+            classNode.propertySpecs.push(parentRef)
+          }
+        })
+        recurseNode(parent)
       }
-    };
-    recurseNode(classNode);
-  });
+    }
+
+    recurseNode(classNode)
+    classNode.propertySpecs = classNode.propertySpecs.filter(spec => excluded.indexOf(spec.ref) === -1)
+  })
 }
 
-const builder = new xml2js.Builder();
+const builder = new xml2js.Builder()
 
 /* Main function */
-// export function generateFromClass (classId, classes, properties) {
-
-export function generateFromClass(graph, classId, options = {}) {
-  const mainSchema = {
-    'xs:schema': {
-      '$': { 'xmlns:xs': 'http://www.w3.org/2001/XMLSchema' },
-      'xs:element': [],
-    },
-  };
-
+export function generateFromClass (graph, classId, options = {}) {
   const context = {
     /* Lookup to keep the nodes by uid */
     classCache: {},
     propertyCache: {},
 
-    /* Main schema to build */
-    xsSchema: mainSchema['xs:schema'],
-
-    /* Track classes that are added to prevent duplicates */
-    addedClasses: {},
-  };
+    /* Track complexTypes added to prevent duplicates */
+    complexTypesAdded: {}
+  }
 
   /* Create a dict lookup for classes and properties for speed and convenience */
   graph.forEach(node => {
     if (node.type === 'Class') {
-      context.classCache[node.uid] = node;
+      context.classCache[node.uid] = node
     } else if (node.type === 'Property') {
-      context.propertyCache[node.uid] = node;
+      context.propertyCache[node.uid] = node
     }
-  });
+  })
 
-  _flattenHierarchies(context);
+  const currClass = context.classCache[classId]
+  if (!currClass) {
+    throw new Error(`Could not find class: ${classId} in graph`)
+  }
 
-  _addClass(context, classId);
-  return builder.buildObject(mainSchema);
+  const mainSchema = {
+    'xs:schema': {
+      '$': { 'xmlns:xs': 'http://www.w3.org/2001/XMLSchema' },
+      'xs:element': {
+        '$': {
+          name: currClass.label,
+          type: classId
+        }
+      },
+      'xs:complexType': []
+    }
+  }
+
+  context.xsSchema = mainSchema['xs:schema']
+
+  _flattenHierarchies(context)
+  _addClass(context, classId)
+
+  return builder.buildObject(mainSchema)
 }
-
